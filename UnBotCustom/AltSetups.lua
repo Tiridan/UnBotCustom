@@ -288,7 +288,7 @@ function A.Reply(message,sender,system)
         end
     elseif w.kind=="outfit_apply" then
         if j.outfitDefinition and message:find("Replacing current equip with outfit "..j.outfitDefinition.name,1,true) then w.response=true;end
-    elseif w.kind=="gear" then if message:find("Equipping",1,true) or message:find("unequipped",1,true) then w.response=true;end
+    elseif w.kind=="gear" or w.kind=="outfit_hand" then if message:find("Equipping",1,true) or message:find("unequipped",1,true) then w.response=true;end
     elseif w.kind=="strategy" then if A.Strategies(message) or low:find("strategy",1,true) or low:find("strategies",1,true) then w.response=true;end end
     if w.response~=nil then A.Log(j,"reply",message);end
 end
@@ -301,6 +301,29 @@ function A.Preflight(j,s)
     if type(p.gear)~="table" or type(p.glyphs)~="table" then return false,"В наборе не хватает данных об экипировке или символах. Обновите данные альта и сохраните набор заново.";end
     if A.spells then local valid,why=A.spells.Valid(p.spellRules);if not valid then return false,why;end end
     return A.BuildGear(j);
+end
+-- Outfits store item IDs without slots; repair only a confirmed hand swap, once.
+function A.CorrectOutfitHands(j)
+    if j.mode~="apply" or not j.outfitDefinition or j.outfitHandsCorrected then return false;end
+    local wanted,actual=j.target.gear,j.snapshot.gear;
+    if not wanted[16] or not wanted[17] or A.GearMatches(wanted[16],actual[16])
+        or not A.GearMatches(wanted[16],actual[17]) or not A.GearMatches(wanted[17],actual[16]) then return false;end
+    for slot=1,19 do if slot~=16 and slot~=17 and not A.GearMatches(wanted[slot],actual[slot]) then return false;end end
+    local links={};
+    for slot=16,17 do
+        local id=A.ItemID(wanted[slot]);local _,link=GetItemInfo(tostring(id));
+        if type(link)~="string" or A.ItemID(link)~=id then
+            A.Finish(false,"Не загрузилась ссылка на оружие. Обновите данные альта и повторите применение набора.");return true;
+        end
+        links[slot]=link;
+    end
+    j.outfitHandsCorrected=true;
+    j.gearSteps={"ue "..A.slotCommands[16],"ue "..A.slotCommands[17],"e mh "..links[16],"e oh "..links[17]};j.gearIndex=1;
+    j.gearProgress={steps={{action="remove",slot=16,index=1},{action="remove",slot=17,index=2},
+        {action="equip",slot=16,index=1},{action="equip",slot=17,index=2}},removeTotal=2,equipTotal=2};
+    A.Log(j,"outfit_hands","confirmed swap; applying saved main/off hand once");
+    A.Status("Оружие оказалось в обратных руках. Восстанавливаем расположение из набора.");
+    j.next="gear_next";return true;
 end
 function A.BuildGear(j)
     local p,s=j.target,j.snapshot;local steps={};
@@ -413,7 +436,7 @@ function A.Next(step)
             local action=j.gearProgress and j.gearProgress.current;
             local kind=action and action.action;
             if kind=="outfit_save" or kind=="outfit_apply" then A.Send(kind,command,"gear_next",kind=="outfit_apply");
-            else A.Send("gear",command,"gear_next",true);end
+            else A.Send(j.outfitHandsCorrected and "outfit_hand" or "gear",command,"gear_next",true);end
         else
             if j.gearProgress then j.gearProgress.stage="verify";end
             A.Inspect("gear_verified");
@@ -1777,6 +1800,7 @@ function A.Next(step)
             j.next="gear_next"
         else Continue(j) end
     elseif step=="gear_verified" then
+        if A.CorrectOutfitHands(j) then return end
         -- Reuse the existing full slot verification, without its unrelated follow-up queries.
         local fast=j.fastGear;j.fastGear=true;previousNext(step)
         if A.job==j then j.fastGear=fast;Continue(j) end

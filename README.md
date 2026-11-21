@@ -2,9 +2,9 @@
 
 **UnBot Custom помогает управлять группой ботов и собственных альтов в WoW WotLK 3.3.5a:** собрать нужный состав, подготовить баффы, применить сохранённые наборы экипировки и талантов, настроить поведение и повторить подготовку перед следующим походом.
 
-Это расширенная версия UnBot на основе аддона GPD. Она рассчитана на сервер с Playerbot/UnBot; текущая разработка ведётся для PikaWoW и Solo Progress. Клиент — **3.3.5a, Interface 30300**. Актуальная публичная версия — **6.44.10-public.1**.
+Это расширенная версия UnBot на основе аддона GPD. Она рассчитана на сервер с Playerbot/UnBot; текущая разработка ведётся для PikaWoW и Solo Progress. Клиент — **3.3.5a, Interface 30300**. Актуальная публичная версия — **6.44.11-public.1**.
 
-[Скачать ZIP](https://github.com/Tiridan/PikaWoWAddons/blob/main/downloads/UnBotCustom-6.44.10-public.1.zip) · [Все команды](COMMANDS_RU.md) · [Установка и перенос настроек](INSTALL_RU.txt) · [Патчнота](PATCH_NOTES_RU.txt) · [Общий комплект аддонов](https://github.com/Tiridan/PikaWoWAddons)
+[Скачать ZIP](https://github.com/Tiridan/PikaWoWAddons/blob/main/downloads/UnBotCustom-6.44.11-public.1.zip) · [Все команды](COMMANDS_RU.md) · [Установка и перенос настроек](INSTALL_RU.txt) · [Патчнота](PATCH_NOTES_RU.txt) · [Общий комплект аддонов](https://github.com/Tiridan/PikaWoWAddons)
 
 ## Зачем он нужен
 
@@ -84,7 +84,7 @@ Custom позволяет сохранять личные настройки а�
 
 ## Установка и первый запуск
 
-1. Скачайте [ZIP UnBot Custom](https://github.com/Tiridan/PikaWoWAddons/blob/main/downloads/UnBotCustom-6.44.10-public.1.zip); на странице файла нажмите **Download raw file**.
+1. Скачайте [ZIP UnBot Custom](https://github.com/Tiridan/PikaWoWAddons/blob/main/downloads/UnBotCustom-6.44.11-public.1.zip); на странице файла нажмите **Download raw file**.
 2. Распакуйте папку `UnBotCustom` в `World of Warcraft/Interface/AddOns/`. Файл `UnBotCustom.toc` должен лежать непосредственно внутри этой папки.
 3. В списке модификаций отключите обычный **UnBot** и включите **UnBot Custom**. Одновременно они используют пересекающиеся команды и глобальные имена.
 4. Если переходите с обычного UnBot, выполните перенос по [INSTALL_RU.txt](INSTALL_RU.txt). Сохраняйте WTF и свои SavedVariables. Помощник VBS необязателен; ручной перенос описан в инструкции.
